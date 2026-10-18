@@ -1,0 +1,8 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Firebase download-token URLs bypass normal Storage rules. Files use
+    // authenticated callable functions and Admin GCS without persistent tokens.
+    match /{path=**} { allow read, write: if false; }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "tileUrl": "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=cb1_4cz3_1_0201c8bc8865d02af68910c0",
+  "attribution": "&copy; OpenStreetMap contributors &copy; CARTO",
+  "center": [
+    -28.7078,
+    20.9705
+  ]
+}

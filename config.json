@@ -1,0 +1,11 @@
+{
+  "appName": "Keimoes Rides",
+  "center": { "lat": -28.7078, "lng": 20.9705 },
+  "serviceRadiusKm": 15,
+  "maxPassengers": 4,
+  "fares": { "central": 25, "upper": 35, "express": 150, "customPerKm": 10, "customMinimum": 25 },
+  "destinations": [
+    { "id": "central", "name": "Keimoes Central", "lat": -28.7078, "lng": 20.9705, "description": "Town centre" },
+    { "id": "upper", "name": "Upper Town", "lat": -28.700, "lng": 20.979, "description": "Confirm the pin on the map" }
+  ]
+}

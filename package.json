@@ -1,0 +1,10 @@
+{
+  "name": "keimoes-rides-functions",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Authoritative dispatch, fares and manual driver verification for Keimoes Rides",
+  "main": "index.js",
+  "engines": { "node": "22" },
+  "scripts": { "test": "node --test ../tests/domain.test.cjs" },
+  "dependencies": { "firebase-admin": "^13.6.0", "firebase-functions": "^7.0.0" }
+}

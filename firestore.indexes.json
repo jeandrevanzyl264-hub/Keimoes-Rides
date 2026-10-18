@@ -1,0 +1,9 @@
+{
+  "indexes": [
+    { "collectionGroup": "kr_rides", "queryScope": "COLLECTION", "fields": [{ "fieldPath": "passengerId", "order": "ASCENDING" }, { "fieldPath": "createdAt", "order": "DESCENDING" }] },
+    { "collectionGroup": "kr_rides", "queryScope": "COLLECTION", "fields": [{ "fieldPath": "driverId", "order": "ASCENDING" }, { "fieldPath": "createdAt", "order": "DESCENDING" }] },
+    { "collectionGroup": "kr_driverApplications", "queryScope": "COLLECTION", "fields": [{ "fieldPath": "status", "order": "ASCENDING" }, { "fieldPath": "submittedAt", "order": "ASCENDING" }] },
+    { "collectionGroup": "kr_publicDrivers", "queryScope": "COLLECTION", "fields": [{ "fieldPath": "online", "order": "ASCENDING" }, { "fieldPath": "lastSeen", "order": "DESCENDING" }] }
+  ],
+  "fieldOverrides": []
+}

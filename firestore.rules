@@ -1,0 +1,62 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function admin() { return signedIn() && request.auth.token.admin == true; }
+    function owner(uid) { return signedIn() && request.auth.uid == uid; }
+    function driver() {
+      return signedIn()
+        && request.auth.token.email_verified == true
+        && get(/databases/$(database)/documents/kr_users/$(request.auth.uid)).data.role == 'driver'
+        && get(/databases/$(database)/documents/kr_driverApplications/$(request.auth.uid)).data.status == 'approved';
+    }
+    function participant(ride) {
+      return signedIn() && (ride.passengerId == request.auth.uid || ride.driverId == request.auth.uid);
+    }
+
+    match /kr_users/{uid} {
+      allow read: if owner(uid) || admin();
+      allow write: if false;
+    }
+    match /kr_driverApplications/{uid} {
+      allow read: if owner(uid) || admin();
+      allow write: if false;
+    }
+    match /kr_publicDrivers/{uid} {
+      allow read: if signedIn();
+      allow write: if false;
+    }
+    match /kr_rideRequests/{rideId} {
+      allow read: if driver() || admin();
+      allow write: if false;
+    }
+    match /kr_rides/{rideId} {
+      allow read: if participant(resource.data) || admin();
+      allow write: if false;
+      match /messages/{messageId} {
+        function ride() { return get(/databases/$(database)/documents/kr_rides/$(rideId)).data; }
+        allow get: if participant(ride()) || admin();
+        allow list: if (participant(ride()) || admin()) && request.query.limit != null && request.query.limit <= 100;
+        allow create: if signedIn()
+          && request.auth.token.email_verified == true
+          && participant(ride())
+          && ride().status in ['accepted', 'arrived', 'in_progress']
+          && request.resource.data.keys().hasAll(['senderId', 'text', 'createdAt'])
+          && request.resource.data.keys().hasOnly(['senderId', 'text', 'createdAt'])
+          && request.resource.data.senderId == request.auth.uid
+          && request.resource.data.text is string
+          && request.resource.data.text.size() >= 1
+          && request.resource.data.text.size() <= 500
+          && request.resource.data.text.matches('.*[^\\s].*')
+          && request.resource.data.createdAt == request.time;
+        allow update, delete: if false;
+      }
+    }
+    match /kr_adminAudit/{id} {
+      allow read: if admin();
+      allow write: if false;
+    }
+    // All old/unknown collections are denied; migration never grants access to legacy data.
+    match /{document=**} { allow read, write: if false; }
+  }
+}

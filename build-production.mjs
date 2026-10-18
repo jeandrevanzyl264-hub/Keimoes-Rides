@@ -1,0 +1,11 @@
+import { spawnSync } from 'node:child_process';
+import { readFile, writeFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+const root = fileURLToPath(new URL('../', import.meta.url));
+const vite = fileURLToPath(new URL('../node_modules/vite/bin/vite.js', import.meta.url));
+const env = { ...process.env, VITE_USE_EMULATORS: 'false' };
+const result = spawnSync(process.execPath, [vite, 'build', '--mode', 'production'], { cwd: root, env, stdio: 'inherit' });
+if (result.error || result.status !== 0) process.exit(result.status || 1);
+const config = JSON.parse(await readFile(new URL('../src/firebase-config.json', import.meta.url), 'utf8'));
+await writeFile(new URL('../dist/deployment.json', import.meta.url), JSON.stringify({ app: 'Keimoes Rides', firebaseMode: 'production', projectId: config.projectId, region: 'us-central1', builtAt: new Date().toISOString() }, null, 2) + '\n');
+console.log('Production build selects the real Firebase project. Local .env settings cannot enable emulators in this command.');
